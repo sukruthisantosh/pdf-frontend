@@ -24,7 +24,7 @@ function App() {
 
     try {
       const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
-      // const res = await fetch('http://localhost:8000/api/upload/', {
+        // const res = await fetch('http://localhost:8000/api/upload/', {
         method: 'POST',
         body: formData,
       })
@@ -36,7 +36,7 @@ function App() {
         const pdfUrl = data.url.startsWith('http')
           ? data.url
           : `https://pdf-backend-vc88.onrender.com${data.url}`
-          // : `http://localhost:8000${data.url}`
+        // : `http://localhost:8000${data.url}`
         localStorage.setItem('uploadedPdfUrl', pdfUrl)
         console.log('PDF URL stored:', pdfUrl)
       } else {
@@ -69,7 +69,7 @@ function App() {
           ) : (
             <p>
               Drag & drop a PDF file here, or click to select a file<br />
-              <span style={{ fontSize: '0.9em', color: '#888' }}>
+              <span className="dropzone-hint">
                 (Only PDF files, max 10MB)
               </span>
             </p>

@@ -175,3 +175,61 @@
 .notes-list::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+.highlight-target {
+  background: #eee;
+  display: flex;
+  position: absolute;
+  transform: translate(0, 8px);
+  z-index: 1;
+}
+
+.add-note-tooltip {
+  width: 100px;
+}
+
+.highlight-content {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  transform: translate(0, 8px);
+  z-index: 2;
+  min-width: 200px;
+}
+
+.selected-text-label {
+  margin-bottom: 8px;
+}
+
+.selected-text-value {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 4px;
+}
+
+.note-textarea {
+  width: 100%;
+  min-height: 60px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px;
+  margin-bottom: 8px;
+  resize: vertical;
+}
+
+.note-action-btn {
+  font-size: 0.8em;
+}
+
+.note-action-btn.add {
+  background: #007bff;
+  color: white;
+}
+
+.pdf-page-current-label {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}

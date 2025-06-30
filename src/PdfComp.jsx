@@ -22,14 +22,10 @@ function PdfComp() {
 
   const renderHighlightTarget = (props) => (
     <div
+      className="highlight-target"
       style={{
-        background: '#eee',
-        display: 'flex',
-        position: 'absolute',
         left: `${props.selectionRegion.left}%`,
         top: `${props.selectionRegion.top + props.selectionRegion.height}%`,
-        transform: 'translate(0, 8px)',
-        zIndex: 1,
       }}
     >
       <Tooltip
@@ -39,7 +35,7 @@ function PdfComp() {
             <MessageIcon />
           </Button>
         }
-        content={() => <div style={{ width: '100px' }}>Add a note</div>}
+        content={() => <div className="add-note-tooltip">Add a note</div>}
         offset={{ left: 0, top: -8 }}
       />
     </div>
@@ -66,22 +62,15 @@ function PdfComp() {
 
     return (
       <div
+        className="highlight-content"
         style={{
-          background: '#fff',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          padding: '8px',
-          position: 'absolute',
           left: `${props.highlightAreas[0].left}%`,
           top: `${props.highlightAreas[0].top + props.highlightAreas[0].height}%`,
-          transform: 'translate(0, 8px)',
-          zIndex: 2,
-          minWidth: '200px',
         }}
       >
-        <div style={{ marginBottom: '8px' }}>
+        <div className="selected-text-label">
           <strong>Selected text:</strong>
-          <div style={{ fontSize: '0.9em', color: '#666', marginTop: '4px' }}>
+          <div className="selected-text-value">
             "{props.selectedText}"
           </div>
         </div>
@@ -89,21 +78,13 @@ function PdfComp() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Add your note here..."
-          style={{
-            width: '100%',
-            minHeight: '60px',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            padding: '4px',
-            marginBottom: '8px',
-            resize: 'vertical',
-          }}
+          className="note-textarea"
         />
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-          <Button onClick={props.cancel} style={{ fontSize: '0.8em' }}>
+          <Button onClick={props.cancel} className="note-action-btn">
             Cancel
           </Button>
-          <Button onClick={addNote} style={{ fontSize: '0.8em', background: '#007bff', color: 'white' }}>
+          <Button onClick={addNote} className="note-action-btn add">
             Add Note
           </Button>
         </div>
@@ -168,7 +149,7 @@ function PdfComp() {
       {/* PDF Viewer on the left */}
       <div className="pdf-viewer-panel">
         {/* Show current page/total pages */}
-        <div style={{ textAlign: 'center', marginBottom: '1rem', fontWeight: 500 }}>
+        <div className="pdf-page-current-label">
           Page <CurrentPageLabel /> of <NumberOfPages />
         </div>
         <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
