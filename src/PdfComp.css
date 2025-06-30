@@ -1,0 +1,41 @@
+.pdfcomp-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.pdfcomp-viewer {
+  width: 48vw;
+  padding: 2rem 2rem 2rem 0;
+  overflow-y: auto;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.pdfcomp-page-wrapper {
+  margin-bottom: 2rem;
+}
+
+.pdfcomp-page-number {
+  text-align: center;
+  margin-top: 0.5rem;
+  color: #555;
+}
+
+.pdfcomp-annotations {
+  width: 48vw;
+  border-left: 1px solid #eee;
+  padding: 2rem;
+  background: #fafafa;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.pdfcomp-annotations-placeholder {
+  color: #aaa;
+}
