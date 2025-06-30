@@ -1,10 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [backendMsg, setBackendMsg] = useState('Loading...')
+
+  useEffect(() => {
+    fetch('https://pdf-backend.onrender.com/api/hello/')
+      .then((res) => res.json())
+      .then((data) => {
+        setBackendMsg(data.message)
+      })
+      .catch((err) => {
+        setBackendMsg('Failed to fetch from backend')
+        console.error(err)
+      })
+  }, [])
 
   return (
     <>
@@ -21,6 +34,7 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
+        <p>{backendMsg}</p>
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
