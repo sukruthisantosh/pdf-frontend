@@ -4,6 +4,19 @@ import { useNavigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { pdfjs } from 'react-pdf';
+
+// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+//   'pdfjs-dist/build/pdf.worker.min.mjs',
+//   import.meta.url,
+// ).toString();
+
+//  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+//   'npm:pdfjs-dist/build/pdf.worker.min.mjs',
+//    import.meta.url,
+//  ).toString();
+
+// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 function App() {
   const [uploadStatus, setUploadStatus] = useState('')
@@ -32,6 +45,14 @@ function App() {
       })
       if (res.ok) {
         setUploadStatus('Upload successful!')
+        const data = await res.json()
+        console.log('Backend response:', data)
+        // Store the PDF URL in localStorage
+        const pdfUrl = data.url.startsWith('http')
+          ? data.url
+          : `http://localhost:8000${data.url}`
+        localStorage.setItem('uploadedPdfUrl', pdfUrl)
+        console.log('PDF URL stored:', pdfUrl)
       } else {
         setUploadStatus('Upload failed.')
       }
@@ -104,7 +125,7 @@ function App() {
           fontWeight: 600,
         }}
         onClick={() => {
-          navigate('/annotation')
+          navigate('/myapp')
         }}
         disabled={!(selectedFile && uploadStatus === 'Upload successful!')}
       >

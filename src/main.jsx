@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import PdfAnnotation from './PDFAnnotation.jsx'
+import MyApp from './PdfComp.jsx'
+import PdfComp from './PdfComp.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -11,6 +13,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/annotation" element={<PdfAnnotation />} />
+        <Route path="/myapp" element={<PdfComp />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
