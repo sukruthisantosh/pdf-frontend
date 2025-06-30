@@ -4,13 +4,17 @@ import { Button, Position, Tooltip, Viewer, Worker, SpecialZoomLevel } from '@re
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/highlight/lib/styles/index.css';
 import './PdfComp.css';
+import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
 
 function PdfComp() {
   const pdfUrl = localStorage.getItem('uploadedPdfUrl');
   const [notes, setNotes] = useState([]);
   const [noteId, setNoteId] = useState(0);
   const [message, setMessage] = useState('');
-  const [viewerInstance, setViewerInstance] = useState(null);
+
+  // Page navigation plugin
+  const pageNavigationPluginInstance = pageNavigationPlugin();
+  const { jumpToPage, CurrentPageLabel, NumberOfPages } = pageNavigationPluginInstance;
 
   if (!pdfUrl) {
     return <div>No PDF uploaded.</div>;
@@ -107,29 +111,46 @@ function PdfComp() {
     );
   };
 
-  // Function to navigate to a specific annotation
+  // Function to navigate to a specific annotation (jump to page)
   const navigateToAnnotation = (note) => {
-    if (viewerInstance) {
-      // Jump to the page
-      viewerInstance.jumpToPage(note.pageIndex);
+    if (jumpToPage) {
+      jumpToPage(note.pageIndex);
     }
   };
 
-  // Create highlights from existing notes
-  const existingHighlights = notes.map((note) => ({
-    content: note.content,
-    highlightAreas: note.highlightAreas,
-    pageIndex: note.pageIndex,
-  }));
+  // Function to get all highlight areas for a given page
+  const getHighlightAreas = (pageIndex) => {
+    return notes
+      .filter((note) => note.pageIndex === pageIndex)
+      .flatMap((note) => note.highlightAreas.map(area => ({ ...area, noteId: note.id })));
+  };
+
+  // Render persistent highlights with a unique data-note-id
+  const renderHighlight = (props) => (
+    <div
+      data-note-id={props.area.noteId}
+      style={{
+        background: 'rgba(255, 230, 0, 0.4)',
+        borderRadius: '2px',
+        position: 'absolute',
+        left: `${props.area.left}%`,
+        top: `${props.area.top}%`,
+        height: `${props.area.height}%`,
+        width: `${props.area.width}%`,
+        pointerEvents: 'none',
+        zIndex: 1,
+      }}
+    />
+  );
 
   const highlightPluginInstance = highlightPlugin({
     renderHighlightTarget,
     renderHighlightContent,
     onSelectionFinished: (selection, content, hideTipAndSelection) => {
-      // This will be handled by renderHighlightContent now
       hideTipAndSelection();
     },
-    highlights: existingHighlights, // This will show existing highlights
+    getHighlightAreas,
+    renderHighlight,
   });
 
   // Add a renderPage function to show page number at the end of each page
@@ -146,13 +167,14 @@ function PdfComp() {
     <div className="pdf-main-container">
       {/* PDF Viewer on the left */}
       <div className="pdf-viewer-panel">
+        {/* Show current page/total pages */}
+        <div style={{ textAlign: 'center', marginBottom: '1rem', fontWeight: 500 }}>
+          Page <CurrentPageLabel /> of <NumberOfPages />
+        </div>
         <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
           <Viewer
             fileUrl={pdfUrl}
-            plugins={[highlightPluginInstance]}
-            onDocumentLoad={(e) => {
-              setViewerInstance(e.doc);
-            }}
+            plugins={[highlightPluginInstance, pageNavigationPluginInstance]}
             renderPage={renderPage}
           />
         </Worker>
