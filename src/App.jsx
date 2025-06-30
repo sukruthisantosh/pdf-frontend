@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { useNavigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -7,6 +8,7 @@ import './App.css'
 function App() {
   const [uploadStatus, setUploadStatus] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
+  const navigate = useNavigate()
 
   const onDrop = useCallback(async (acceptedFiles, fileRejections) => {
     if (fileRejections.length > 0) {
@@ -23,8 +25,8 @@ function App() {
     formData.append('file', file)
 
     try {
-      const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
-      // const res = await fetch('http://localhost:8000/api/upload/', {
+      // const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
+      const res = await fetch('http://localhost:8000/api/upload/', {
         method: 'POST',
         body: formData,
       })
@@ -89,6 +91,25 @@ function App() {
         )}
         {uploadStatus && <p>{uploadStatus}</p>}
       </div>
+      <button
+        style={{
+          marginTop: 24,
+          padding: '12px 32px',
+          fontSize: '1.1em',
+          borderRadius: 8,
+          border: 'none',
+          background: selectedFile && uploadStatus === 'Upload successful!' ? '#646cff' : '#ccc',
+          color: '#fff',
+          cursor: selectedFile && uploadStatus === 'Upload successful!' ? 'pointer' : 'not-allowed',
+          fontWeight: 600,
+        }}
+        onClick={() => {
+          navigate('/annotation')
+        }}
+        disabled={!(selectedFile && uploadStatus === 'Upload successful!')}
+      >
+        Continue to Annotation
+      </button>
     </>
   )
 }
