@@ -7,16 +7,36 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 function PdfComp() {
   const [numPages, setNumPages] = useState();
   const pdfUrl = localStorage.getItem('uploadedPdfUrl');
-  console.log('PDF URL:', pdfUrl);
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
+    <div
+      style={{
+        display: 'flex',
+        width: '100vw',
+        height: '100vh',
+        background: '#f4f6fa',
+        margin: 0,
+        padding: 0,
+        boxSizing: 'border-box',
+      }}
+    >
       {/* PDF Viewer on the left */}
-      <div style={{ flex: 2, paddingRight: '2rem', minWidth: 0 }}>
+      <div
+        style={{
+          flex: 1,
+          padding: '2rem',
+          minWidth: 0,
+          background: '#fff',
+          height: '100%',
+          overflowY: 'auto',
+          boxShadow: '2px 0 8px rgba(0,0,0,0.03)',
+          borderRight: '1px solid #e5e7eb',
+        }}
+      >
         <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
           {Array.from(
             new Array(numPages),
@@ -30,23 +50,42 @@ function PdfComp() {
             ),
           )}
         </Document>
-        <p>
+        <p style={{ color: '#888', textAlign: 'center' }}>
           {numPages ? `Total pages: ${numPages}` : 'Loading...'}
         </p>
       </div>
       {/* Annotations Placeholder on the right */}
-      <div style={{
-        flex: 1,
-        background: '#f7f7f7',
-        borderLeft: '1px solid #ddd',
-        padding: '2rem',
-        minHeight: '100vh',
-        boxSizing: 'border-box'
-      }}>
-        <h2>Annotations</h2>
-        <div style={{ color: '#888' }}>
-          {/* Placeholder content */}
-          No annotations yet. Select text in the PDF to add notes.
+      <div
+        style={{
+          flex: 1.5,
+          background: '#f4f6fa',
+          padding: '2rem',
+          height: '100%',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            maxWidth: 420,
+            background: '#fff',
+            borderRadius: '12px',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+            padding: '2.5rem 2rem',
+            minHeight: '300px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <h2 style={{ color: '#222', marginBottom: '1rem', fontWeight: 700, textAlign: 'center' }}>Annotations</h2>
+          <div style={{ color: '#888', textAlign: 'center' }}>
+            No annotations yet. Select text in the PDF to add notes.
+          </div>
         </div>
       </div>
     </div>
