@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { highlightPlugin, MessageIcon } from '@react-pdf-viewer/highlight';
-import { Button, Position, Tooltip, Viewer, Worker } from '@react-pdf-viewer/core';
+import { Button, Position, Tooltip, Viewer, Worker, SpecialZoomLevel } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/highlight/lib/styles/index.css';
 import './PdfComp.css';
@@ -10,6 +10,7 @@ function PdfComp() {
   const [notes, setNotes] = useState([]);
   const [noteId, setNoteId] = useState(0);
   const [message, setMessage] = useState('');
+  const [viewerInstance, setViewerInstance] = useState(null);
 
   if (!pdfUrl) {
     return <div>No PDF uploaded.</div>;
@@ -42,20 +43,19 @@ function PdfComp() {
 
   const renderHighlightContent = (props) => {
     const addNote = () => {
-      // Only add message if it's not empty
       if (message !== '') {
+        const pageIndex = props.highlightAreas[0]?.pageIndex ?? 0;
         const note = {
-          // Increase the id manually
           id: noteId + 1,
           content: message,
           highlightAreas: props.highlightAreas,
           quote: props.selectedText,
+          pageIndex, // Use correct pageIndex
+          timestamp: new Date().toISOString(),
         };
         setNotes(notes.concat([note]));
         setNoteId(noteId + 1);
-        setMessage(''); // Clear the message
-
-        // Close the form
+        setMessage('');
         props.cancel();
       }
     };
@@ -107,6 +107,21 @@ function PdfComp() {
     );
   };
 
+  // Function to navigate to a specific annotation
+  const navigateToAnnotation = (note) => {
+    if (viewerInstance) {
+      // Jump to the page
+      viewerInstance.jumpToPage(note.pageIndex);
+    }
+  };
+
+  // Create highlights from existing notes
+  const existingHighlights = notes.map((note) => ({
+    content: note.content,
+    highlightAreas: note.highlightAreas,
+    pageIndex: note.pageIndex,
+  }));
+
   const highlightPluginInstance = highlightPlugin({
     renderHighlightTarget,
     renderHighlightContent,
@@ -114,14 +129,32 @@ function PdfComp() {
       // This will be handled by renderHighlightContent now
       hideTipAndSelection();
     },
+    highlights: existingHighlights, // This will show existing highlights
   });
+
+  // Add a renderPage function to show page number at the end of each page
+  const renderPage = (props) => (
+    <div className="pdf-page-wrapper">
+      {props.canvasLayer.children}
+      {props.annotationLayer.children}
+      {props.textLayer.children}
+      <div className="pdf-page-label">Page {props.pageIndex + 1}</div>
+    </div>
+  );
 
   return (
     <div className="pdf-main-container">
       {/* PDF Viewer on the left */}
       <div className="pdf-viewer-panel">
         <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-          <Viewer fileUrl={pdfUrl} plugins={[highlightPluginInstance]} />
+          <Viewer
+            fileUrl={pdfUrl}
+            plugins={[highlightPluginInstance]}
+            onDocumentLoad={(e) => {
+              setViewerInstance(e.doc);
+            }}
+            renderPage={renderPage}
+          />
         </Worker>
       </div>
       {/* Annotations Panel on the right */}
@@ -133,14 +166,27 @@ function PdfComp() {
               No notes yet. Select text in the PDF to add notes.
             </div>
           ) : (
-            <div>
+            <div className="notes-list">
               {notes.map((note) => (
-                <div key={note.id} style={{ marginBottom: '1rem', padding: '0.5rem', border: '1px solid #e5e7eb', borderRadius: '4px' }}>
-                  <strong>Note #{note.id}</strong>
-                  <p style={{ fontSize: '0.9em', color: '#666', margin: '0.25rem 0', fontStyle: 'italic' }}>
+                <div key={note.id} className="note-item">
+                  <div className="note-header">
+                    <strong>Note #{note.id}</strong>
+                    <span className="page-number">Page {note.pageIndex + 1}</span>
+                  </div>
+                  <div className="selected-text">
                     "{note.quote}"
-                  </p>
-                  <p>{note.content}</p>
+                  </div>
+                  <div className="note-content">
+                    {note.content}
+                  </div>
+                  <div className="note-actions">
+                    <Button
+                      onClick={() => navigateToAnnotation(note)}
+                      className="view-button"
+                    >
+                      View
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
