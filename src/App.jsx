@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { useNavigate } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -7,6 +8,8 @@ import './App.css'
 function App() {
   const [uploadStatus, setUploadStatus] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
+  const [uploadedFileName, setUploadedFileName] = useState(null)
+  const navigate = useNavigate()
 
   const onDrop = useCallback(async (acceptedFiles, fileRejections) => {
     if (fileRejections.length > 0) {
@@ -23,13 +26,14 @@ function App() {
     formData.append('file', file)
 
     try {
-      const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
-      // const res = await fetch('http://localhost:8000/api/upload/', {
+      const res = await fetch('http://localhost:8000/api/upload/', {
         method: 'POST',
         body: formData,
       })
       if (res.ok) {
+        const data = await res.json()
         setUploadStatus('Upload successful!')
+        setUploadedFileName(data.url) // just store the URL, don't navigate here!
       } else {
         setUploadStatus('Upload failed.')
       }
@@ -39,7 +43,7 @@ function App() {
     }
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'application/pdf': ['.pdf'] },
     maxFiles: 1,
@@ -88,6 +92,28 @@ function App() {
           </div>
         )}
         {uploadStatus && <p>{uploadStatus}</p>}
+        <button
+          style={{
+            marginTop: 24,
+            padding: '12px 24px',
+            fontSize: '1em',
+            borderRadius: 6,
+            border: 'none',
+            background: '#007bff',
+            color: '#fff',
+            cursor: 'pointer',
+            opacity: selectedFile && uploadStatus === 'Upload successful!' ? 1 : 0.5,
+            pointerEvents: selectedFile && uploadStatus === 'Upload successful!' ? 'auto' : 'none',
+            transition: 'opacity 0.2s',
+          }}
+          onClick={() =>
+            navigate('/annotate', {
+              state: { pdfUrl: `http://localhost:8000${uploadedFileName}` },
+            })
+          }
+        >
+          Continue to annotation
+        </button>
       </div>
     </>
   )
