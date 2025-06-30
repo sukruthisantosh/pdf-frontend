@@ -23,8 +23,8 @@ function App() {
     formData.append('file', file)
 
     try {
-      // const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
-      const res = await fetch('http://localhost:8000/api/upload/', {
+      const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
+      // const res = await fetch('http://localhost:8000/api/upload/', {
         method: 'POST',
         body: formData,
       })
@@ -35,7 +35,8 @@ function App() {
         // Store the PDF URL in localStorage
         const pdfUrl = data.url.startsWith('http')
           ? data.url
-          : `http://localhost:8000${data.url}`
+          : `https://pdf-backend-vc88.onrender.com${data.url}`
+          // : `http://localhost:8000${data.url}`
         localStorage.setItem('uploadedPdfUrl', pdfUrl)
         console.log('PDF URL stored:', pdfUrl)
       } else {
