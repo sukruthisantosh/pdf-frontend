@@ -21,9 +21,11 @@ function PdfComp() {
           {Array.from(
             new Array(numPages),
             (el, index) => (
-              <div key={`page_${index + 1}`} className="pdf-page-wrapper">
+              <div key={`page_${index + 1}`} className="pdf-page-wrapper" style={{ flexDirection: 'column', alignItems: 'center' }}>
                 <Page pageNumber={index + 1} width={900} />
-                <div className="pdf-page-label"></div>
+                <div className="pdf-page-label">
+                  Page {index + 1} of {numPages}
+                </div>
               </div>
             ),
           )}

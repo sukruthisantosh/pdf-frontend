@@ -26,9 +26,16 @@
 }
 
 .pdf-page-label {
+  display: inline-block;
+  margin: 16px auto 0 auto;
+  padding: 4px 16px;
+  background: #f4f6fa;
+  border-radius: 16px;
+  color: #444;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   text-align: center;
-  margin-top: 0.5rem;
-  color: #555;
 }
 
 .pdf-total-pages {
