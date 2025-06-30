@@ -27,7 +27,7 @@ function PdfComp() {
       {/* PDF Viewer on the left */}
       <div
         style={{
-          flex: 1,
+          flex: 2,
           padding: '2rem',
           minWidth: 0,
           background: '#fff',
@@ -41,10 +41,9 @@ function PdfComp() {
           {Array.from(
             new Array(numPages),
             (el, index) => (
-              <div key={`page_${index + 1}`} style={{ marginBottom: '2rem' }}>
-                <Page pageNumber={index + 1} />
+              <div key={`page_${index + 1}`} style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
+                <Page pageNumber={index + 1} width={900} /> 
                 <div style={{ textAlign: 'center', marginTop: '0.5rem', color: '#555' }}>
-                  Page {index + 1}
                 </div>
               </div>
             ),
@@ -57,7 +56,7 @@ function PdfComp() {
       {/* Annotations Placeholder on the right */}
       <div
         style={{
-          flex: 1.5,
+          flex: 1,
           background: '#f4f6fa',
           padding: '2rem',
           height: '100%',
