@@ -8,7 +8,7 @@ function App() {
   const [backendMsg, setBackendMsg] = useState('Loading...')
 
   useEffect(() => {
-    fetch('https://pdf-backend.onrender.com/api/hello/')
+    fetch('https://pdf-backend-vc88.onrender.com/api/hello/')
       .then((res) => res.json())
       .then((data) => {
         setBackendMsg(data.message)
