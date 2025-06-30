@@ -3,7 +3,6 @@ import { useDropzone } from 'react-dropzone'
 import { useNavigate } from 'react-router-dom'
 import './App.css'
 
-
 function App() {
   const [uploadStatus, setUploadStatus] = useState('')
   const [selectedFile, setSelectedFile] = useState(null)
@@ -48,7 +47,7 @@ function App() {
     }
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'application/pdf': ['.pdf'] },
     maxFiles: 1,
@@ -57,20 +56,11 @@ function App() {
 
   return (
     <>
-      {/* Removed logo images */}
       <h1>Smart PDF Annotation</h1>
       <div className="card">
         <div
           {...getRootProps()}
-          style={{
-            border: '2px dashed #888',
-            borderRadius: 8,
-            padding: 24,
-            textAlign: 'center',
-            background: isDragActive ? '#f0f8ff' : '#fafafa',
-            cursor: 'pointer',
-            marginBottom: 16,
-          }}
+          className={`dropzone${isDragActive ? ' active' : ''}`}
         >
           <input {...getInputProps()} />
           {isDragActive ? (
@@ -85,24 +75,14 @@ function App() {
           )}
         </div>
         {selectedFile && (
-          <div style={{ marginBottom: 8 }}>
+          <div className="selected-file">
             <strong>Selected file:</strong> {selectedFile.name}
           </div>
         )}
         {uploadStatus && <p>{uploadStatus}</p>}
       </div>
       <button
-        style={{
-          marginTop: 24,
-          padding: '12px 32px',
-          fontSize: '1.1em',
-          borderRadius: 8,
-          border: 'none',
-          background: selectedFile && uploadStatus === 'Upload successful!' ? '#646cff' : '#ccc',
-          color: '#fff',
-          cursor: selectedFile && uploadStatus === 'Upload successful!' ? 'pointer' : 'not-allowed',
-          fontWeight: 600,
-        }}
+        className={`upload-btn${selectedFile && uploadStatus === 'Upload successful!' ? ' enabled' : ' disabled'}`}
         onClick={() => {
           navigate('/myapp')
         }}

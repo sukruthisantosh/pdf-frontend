@@ -1,41 +1,74 @@
-.pdfcomp-container {
+.pdf-main-container {
   display: flex;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
+  background: #f4f6fa;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
-.pdfcomp-viewer {
-  width: 48vw;
-  padding: 2rem 2rem 2rem 0;
-  overflow-y: auto;
+.pdf-viewer-panel {
+  flex: 2;
+  padding: 2rem;
+  min-width: 0;
   background: #fff;
-  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+  border-right: 1px solid #e5e7eb;
 }
 
-.pdfcomp-page-wrapper {
+.pdf-page-wrapper {
   margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
-.pdfcomp-page-number {
+.pdf-page-label {
   text-align: center;
   margin-top: 0.5rem;
   color: #555;
 }
 
-.pdfcomp-annotations {
-  width: 48vw;
-  border-left: 1px solid #eee;
-  padding: 2rem;
-  background: #fafafa;
-  min-width: 250px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  overflow-y: auto;
+.pdf-total-pages {
+  color: #888;
+  text-align: center;
 }
 
-.pdfcomp-annotations-placeholder {
-  color: #aaa;
+.annotations-panel {
+  flex: 1;
+  background: #f4f6fa;
+  padding: 2rem;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.annotations-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  padding: 2.5rem 2rem;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.annotations-title {
+  color: #222;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.annotations-placeholder {
+  color: #888;
+  text-align: center;
 }
