@@ -10,7 +10,6 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/annotation" element={<PdfAnnotation />} />
         <Route path="/myapp" element={<PdfComp />} />
       </Routes>
     </BrowserRouter>

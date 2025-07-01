@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { highlightPlugin, MessageIcon } from '@react-pdf-viewer/highlight';
 import { Button, Position, Tooltip, Viewer, Worker, SpecialZoomLevel } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
@@ -41,6 +42,81 @@ function PdfComp() {
     </div>
   );
 
+  // Move the highlight content portal logic to a React component
+  function HighlightContentPortal({ props, message, setMessage, addNote }) {
+    const [portalPos, setPortalPos] = useState(null);
+    const PORTAL_WIDTH = 320;
+    const PORTAL_HEIGHT = 180;
+
+    React.useEffect(() => {
+      if (props.highlightAreas && props.highlightAreas[0]) {
+        const { left, top, height } = props.highlightAreas[0];
+        const viewer = document.querySelector('.pdf-viewer-panel');
+        if (viewer) {
+          const rect = viewer.getBoundingClientRect();
+          let absLeft = rect.left + (left / 100) * rect.width;
+          let absTop = rect.top + ((top + height) / 100) * rect.height;
+          // Check for right overflow
+          if (absLeft + PORTAL_WIDTH > window.innerWidth - 12) {
+            absLeft = window.innerWidth - PORTAL_WIDTH - 12;
+          }
+          // Check for bottom overflow
+          if (absTop + PORTAL_HEIGHT > window.innerHeight - 12) {
+            // Place above selection if not enough space below
+            absTop = rect.top + (top / 100) * rect.height - PORTAL_HEIGHT - 8;
+            // If still offscreen, clamp to top
+            if (absTop < 12) absTop = 12;
+          }
+          setPortalPos({ left: absLeft, top: absTop });
+        }
+      }
+    }, [props.highlightAreas]);
+
+    if (!portalPos) return null;
+    return createPortal(
+      <div
+        className="highlight-content"
+        style={{
+          position: 'absolute',
+          left: portalPos.left,
+          top: portalPos.top,
+          zIndex: 9999,
+          background: '#fff',
+          boxShadow: '0 2px 8px rgba(44,62,80,0.08)',
+          borderRadius: 8,
+          padding: 16,
+          minWidth: 260,
+          maxWidth: 320,
+          width: 320,
+          border: '1px solid #e3e8ee',
+        }}
+      >
+        <div className="selected-text-label">
+          <strong>Selected text:</strong>
+          <div className="selected-text-value">
+            "{props.selectedText}"
+          </div>
+        </div>
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Add your note here..."
+          className="note-textarea"
+          style={{ width: '100%', minHeight: 48, margin: '8px 0' }}
+        />
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button onClick={props.cancel} className="note-action-btn">
+            Cancel
+          </Button>
+          <Button onClick={addNote} className="note-action-btn add">
+            Add Note
+          </Button>
+        </div>
+      </div>,
+      document.body
+    );
+  }
+
   const renderHighlightContent = (props) => {
     const addNote = () => {
       if (message !== '') {
@@ -59,37 +135,7 @@ function PdfComp() {
         props.cancel();
       }
     };
-
-    return (
-      <div
-        className="highlight-content"
-        style={{
-          left: `${props.highlightAreas[0].left}%`,
-          top: `${props.highlightAreas[0].top + props.highlightAreas[0].height}%`,
-        }}
-      >
-        <div className="selected-text-label">
-          <strong>Selected text:</strong>
-          <div className="selected-text-value">
-            "{props.selectedText}"
-          </div>
-        </div>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Add your note here..."
-          className="note-textarea"
-        />
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-          <Button onClick={props.cancel} className="note-action-btn">
-            Cancel
-          </Button>
-          <Button onClick={addNote} className="note-action-btn add">
-            Add Note
-          </Button>
-        </div>
-      </div>
-    );
+    return <HighlightContentPortal props={props} message={message} setMessage={setMessage} addNote={addNote} />;
   };
 
   // Function to navigate to a specific annotation (jump to page)
