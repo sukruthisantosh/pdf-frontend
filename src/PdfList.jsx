@@ -9,7 +9,7 @@ export default function PdfList() {
 
     useEffect(() => {
         // fetch(`http://localhost:8000/api/list_pdfs/`)
-        fetch(`http://pdf-backend-vc88.onrender.com/api/list_pdfs/`)
+        fetch(`https://pdf-backend-vc88.onrender.com/api/list_pdfs/`)
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch PDFs");
                 return res.json();
