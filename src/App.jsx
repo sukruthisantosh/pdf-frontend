@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useNavigate } from 'react-router-dom'
 import './App.css'
+import PdfList from "./PdfList"
 
 function App() {
   const [uploadStatus, setUploadStatus] = useState('')
@@ -161,6 +162,7 @@ function App() {
           </button>
         </main>
       </div>
+      <PdfList />
     </div>
   )
 }

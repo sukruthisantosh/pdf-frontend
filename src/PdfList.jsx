@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import './PdfList.css';
 
-const PdfList = () => {
+const BACKEND_URL = "http://localhost:8000"; // Local backend URL
+
+export default function PdfList() {
     const [pdfs, setPdfs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        fetchPdfs();
+        fetch(`${BACKEND_URL}/api/list_pdfs/`)
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to fetch PDFs");
+                return res.json();
+            })
+            .then((data) => {
+                setPdfs(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
     }, []);
-
-    const fetchPdfs = async () => {
-        try {
-            setLoading(true);
-            // Use your deployed backend URL
-            const response = await fetch('https://pdf-backend-vc88.onrender.com/api/list_pdfs/');
-            if (!response.ok) {
-                throw new Error('Failed to fetch PDFs');
-            }
-            const data = await response.json();
-            setPdfs(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -88,6 +85,4 @@ const PdfList = () => {
             )}
         </div>
     );
-};
-
-export default PdfList; 
+} 
