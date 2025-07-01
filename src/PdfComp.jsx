@@ -42,7 +42,6 @@ function PdfComp() {
     </div>
   );
 
-  // Move the highlight content portal logic to a React component
   function HighlightContentPortal({ props, message, setMessage, addNote }) {
     const [portalPos, setPortalPos] = useState(null);
     const PORTAL_WIDTH = 320;
@@ -56,15 +55,11 @@ function PdfComp() {
           const rect = viewer.getBoundingClientRect();
           let absLeft = rect.left + (left / 100) * rect.width;
           let absTop = rect.top + ((top + height) / 100) * rect.height;
-          // Check for right overflow
           if (absLeft + PORTAL_WIDTH > window.innerWidth - 12) {
             absLeft = window.innerWidth - PORTAL_WIDTH - 12;
           }
-          // Check for bottom overflow
           if (absTop + PORTAL_HEIGHT > window.innerHeight - 12) {
-            // Place above selection if not enough space below
             absTop = rect.top + (top / 100) * rect.height - PORTAL_HEIGHT - 8;
-            // If still offscreen, clamp to top
             if (absTop < 12) absTop = 12;
           }
           setPortalPos({ left: absLeft, top: absTop });
@@ -77,18 +72,8 @@ function PdfComp() {
       <div
         className="highlight-content"
         style={{
-          position: 'absolute',
           left: portalPos.left,
           top: portalPos.top,
-          zIndex: 9999,
-          background: '#fff',
-          boxShadow: '0 2px 8px rgba(44,62,80,0.08)',
-          borderRadius: 8,
-          padding: 16,
-          minWidth: 260,
-          maxWidth: 320,
-          width: 320,
-          border: '1px solid #e3e8ee',
         }}
       >
         <div className="selected-text-label">
@@ -101,10 +86,9 @@ function PdfComp() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Add your note here..."
-          className="note-textarea"
-          style={{ width: '100%', minHeight: 48, margin: '8px 0' }}
+          className="note-popup-textarea note-textarea"
         />
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        <div className="note-popup-actions">
           <Button onClick={props.cancel} className="note-action-btn">
             Cancel
           </Button>
@@ -156,16 +140,12 @@ function PdfComp() {
   const renderHighlight = (props) => (
     <div
       data-note-id={props.area.noteId}
+      className="highlight-rect"
       style={{
-        background: 'rgba(255, 230, 0, 0.4)',
-        borderRadius: '2px',
-        position: 'absolute',
         left: `${props.area.left}%`,
         top: `${props.area.top}%`,
         height: `${props.area.height}%`,
         width: `${props.area.width}%`,
-        pointerEvents: 'none',
-        zIndex: 1,
       }}
     />
   );
@@ -189,6 +169,11 @@ function PdfComp() {
       <div className="pdf-page-label">Page {props.pageIndex + 1}</div>
     </div>
   );
+
+  // Add this function to remove a note by id
+  const removeNote = (id) => {
+    setNotes(notes.filter(note => note.id !== id));
+  };
 
   return (
     <div className="pdf-main-container">
@@ -221,6 +206,14 @@ function PdfComp() {
                   <div className="note-header">
                     <strong>Note #{note.id}</strong>
                     <span className="page-number">Page {note.pageIndex + 1}</span>
+                    <button
+                      className="remove-note-btn"
+                      title="Remove note"
+                      onClick={() => removeNote(note.id)}
+                      aria-label="Remove note"
+                    >
+                      ×
+                    </button>
                   </div>
                   <div className="selected-text">
                     "{note.quote}"
