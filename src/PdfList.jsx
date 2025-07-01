@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './PdfList.css';
 
-const BACKEND_URL = "http://localhost:8000"; // Local backend URL
 
 export default function PdfList() {
     const [pdfs, setPdfs] = useState([]);
@@ -9,7 +8,8 @@ export default function PdfList() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch(`${BACKEND_URL}/api/list_pdfs/`)
+        // fetch(`http://localhost:8000/api/list_pdfs/`)
+        fetch(`http://pdf-backend-vc88.onrender.com/api/list_pdfs/`)
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch PDFs");
                 return res.json();
