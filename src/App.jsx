@@ -23,8 +23,8 @@ function App() {
     formData.append('file', file)
 
     try {
-      const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
-        // const res = await fetch('http://localhost:8000/api/upload/', {
+      // const res = await fetch('https://pdf-backend-vc88.onrender.com/api/upload/', {
+      const res = await fetch('http://localhost:8000/api/upload/', {
         method: 'POST',
         body: formData,
       })
@@ -32,12 +32,15 @@ function App() {
         setUploadStatus('Upload successful!')
         const data = await res.json()
         console.log('Backend response:', data)
-        // Store the PDF URL in localStorage
         const pdfUrl = data.url.startsWith('http')
           ? data.url
-          : `https://pdf-backend-vc88.onrender.com${data.url}`
-        // : `http://localhost:8000${data.url}`
+          // : `https://pdf-backend-vc88.onrender.com${data.url}`
+          : `http://localhost:8000${data.url}`
         localStorage.setItem('uploadedPdfUrl', pdfUrl)
+        if (data.pdf_id !== undefined && data.pdf_id !== null) {
+          localStorage.setItem('currentPdfId', data.pdf_id.toString())
+          console.log('PDF ID stored:', data.pdf_id)
+        }
         console.log('PDF URL stored:', pdfUrl)
       } else {
         setUploadStatus('Upload failed.')
@@ -57,7 +60,15 @@ function App() {
 
   return (
     <>
-      <h1>Smart PDF Annotation</h1>
+      <div className="app-header">
+        <h1>Smart PDF Annotation</h1>
+        <button
+          className="my-pdfs-btn"
+          onClick={() => navigate('/mypdfs')}
+        >
+          My PDFs
+        </button>
+      </div>
       <div className="card">
         <div
           {...getRootProps()}

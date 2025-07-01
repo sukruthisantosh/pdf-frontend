@@ -5,6 +5,38 @@
   text-align: center;
 }
 
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.app-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.my-pdfs-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.my-pdfs-btn:hover {
+  background: #5a6268;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -42,49 +74,83 @@
 
 /* Dropzone styles */
 .dropzone {
-  border: 2px dashed #888;
+  border: 2px dashed #ccc;
   border-radius: 8px;
-  padding: 24px;
+  padding: 40px;
   text-align: center;
-  background: #fafafa;
   cursor: pointer;
-  margin-bottom: 16px;
-  transition: background 0.2s;
+  transition: border-color 0.3s ease;
+  background: #f8f9fa;
+}
+
+.dropzone:hover {
+  border-color: #007bff;
 }
 
 .dropzone.active {
-  background: #f0f8ff;
+  border-color: #28a745;
+  background: #d4edda;
+}
+
+.dropzone-hint {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 10px;
+  display: block;
 }
 
 .selected-file {
-  margin-bottom: 8px;
+  margin-top: 20px;
+  padding: 15px;
+  background: #e7f3ff;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
 }
 
 .upload-btn {
-  margin-top: 24px;
-  padding: 12px 32px;
-  font-size: 1.1em;
-  border-radius: 8px;
+  margin-top: 20px;
+  padding: 12px 30px;
+  font-size: 16px;
   border: none;
-  color: #fff;
-  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .upload-btn.enabled {
-  background: #646cff;
-  cursor: pointer;
+  background: #28a745;
+  color: white;
+}
+
+.upload-btn.enabled:hover {
+  background: #1e7e34;
+  transform: translateY(-1px);
 }
 
 .upload-btn.disabled {
-  background: #ccc;
+  background: #6c757d;
+  color: #fff;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .read-the-docs {
   color: #888;
 }
 
-.dropzone-hint {
-  font-size: 0.9em;
-  color: #888;
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .dropzone {
+    padding: 20px;
+  }
 }
