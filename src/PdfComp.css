@@ -1,3 +1,10 @@
+/* Highlight color when scrolled to (focused) */
+.Highlight--scrolledTo {
+  background: rgba(79, 140, 255, 0.5) !important;
+  box-shadow: 0 0 8px 2px #4f8cff55;
+  transition: background 0.3s;
+}
+
 .pdf-main-container {
   display: flex;
   width: 100vw;
@@ -12,11 +19,18 @@
   flex: 2;
   min-width: 0;
   background: #fff;
-  height: 90vh;
+  height: 100vh;
   overflow-y: auto;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
   border-right: 1px solid #e5e7eb;
   position: relative;
+}
+
+.pdf-viewer-panel>div {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 }
 
 .pdf-page-wrapper {
@@ -98,6 +112,14 @@
   padding: 0.75rem 1rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   border-left: 4px solid #4f8cff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.note-item:hover,
+.note-item:focus {
+  background: #e6f0ff;
+  outline: none;
 }
 
 .note-header {

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './PdfComp.css';
 import "react-pdf-highlighter/dist/style.css";
-import { PdfHighlighter, PdfLoader, Tip, Highlight } from "react-pdf-highlighter";
+import { PdfHighlighter, PdfLoader, Highlight } from "react-pdf-highlighter";
 
 function PdfComp() {
   const pdfUrl = localStorage.getItem('uploadedPdfUrl') || "https://arxiv.org/pdf/1708.08021.pdf";
   const [highlights, setHighlights] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // 1-based page number
 
+  // Add unique id to each highlight
   const addHighlight = (highlight) => {
     setHighlights((prev) => [
       { ...highlight, id: String(Math.random()) },
@@ -18,53 +18,46 @@ function PdfComp() {
   return (
     <div className="pdf-main-container">
       <div className="pdf-viewer-panel">
-        <div style={{ position: "relative", width: "100%", height: "90vh", minHeight: "400px", minWidth: "300px" }}>
+        <div style={{ position: "relative", width: "100%", height: "100vh", minHeight: "400px", minWidth: "300px" }}>
           <PdfLoader url={pdfUrl} beforeLoad={<div>Loading PDF...</div>}>
             {pdfDocument => (
-              <>
-                <PdfHighlighter
-                  pdfDocument={pdfDocument}
-                  highlights={highlights}
-                  onSelectionFinished={(position, content, hideTipAndSelection) => {
-                    let input = "";
-                    return (
-                      <div className="custom-annotation-popup">
-                        <textarea
-                          className="custom-annotation-textarea"
-                          placeholder="Your comment"
-                          onChange={e => (input = e.target.value)}
-                        />
-                        <button
-                          className="custom-annotation-save-btn"
-                          onClick={() => {
-                            addHighlight({ content, position, comment: { text: input } });
-                            hideTipAndSelection();
-                          }}
-                        >
-                          Save
-                        </button>
-                      </div>
-                    );
-                  }}
-                  highlightTransform={(highlight, index, setTip, hideTip, viewportToScaled, screenshot, isScrolledTo) => (
-                    <Highlight
-                      key={index}
-                      isScrolledTo={isScrolledTo}
-                      position={highlight.position}
-                      comment={highlight.comment}
-                    />
-                  )}
-                  onScroll={pageNumber => setCurrentPage(pageNumber)}
-                />
-                <div className="page-number-display">
-                  Page {currentPage}
-                </div>
-              </>
+              <PdfHighlighter
+                pdfDocument={pdfDocument}
+                highlights={highlights}
+                onSelectionFinished={(position, content, hideTipAndSelection) => {
+                  let input = "";
+                  return (
+                    <div className="custom-annotation-popup">
+                      <textarea
+                        className="custom-annotation-textarea"
+                        placeholder="Your comment"
+                        onChange={e => (input = e.target.value)}
+                      />
+                      <button
+                        className="custom-annotation-save-btn"
+                        onClick={() => {
+                          addHighlight({ content, position, comment: { text: input } });
+                          hideTipAndSelection();
+                        }}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  );
+                }}
+                highlightTransform={(highlight, index, setTip, hideTip, viewportToScaled, screenshot, isScrolledTo) => (
+                  <Highlight
+                    key={index}
+                    isScrolledTo={isScrolledTo}
+                    position={highlight.position}
+                    comment={highlight.comment}
+                  />
+                )}
+              />
             )}
           </PdfLoader>
         </div>
       </div>
-      {/* Annotations Panel on the right (can be left empty for now) */}
       <div className="annotations-panel">
         <div className="annotations-card">
           <h2 className="annotations-title">Notes</h2>
@@ -75,9 +68,13 @@ function PdfComp() {
           ) : (
             <div className="notes-list">
               {highlights.map((highlight, idx) => (
-                <div key={highlight.id || idx} className="note-item">
+                <div
+                  key={highlight.id || idx}
+                  className="note-item"
+                // onClick removed for now
+                >
                   <div className="note-header">
-                    <strong>Page {highlight.position.pageNumber || '?'}</strong>
+                    <strong>Page {highlight.position.pageNumber || '?'} </strong>
                   </div>
                   <div className="selected-text">
                     {highlight.content && highlight.content.text
