@@ -10,13 +10,13 @@
 
 .pdf-viewer-panel {
   flex: 2;
-  padding: 2rem;
   min-width: 0;
   background: #fff;
-  height: 100%;
+  height: 90vh;
   overflow-y: auto;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
   border-right: 1px solid #e5e7eb;
+  position: relative;
 }
 
 .pdf-page-wrapper {

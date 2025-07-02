@@ -8,8 +8,8 @@ export default function PdfList() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        // fetch(`http://localhost:8000/api/list_pdfs/`)
-        fetch(`https://pdf-backend-vc88.onrender.com/api/list_pdfs/`)
+        fetch(`http://localhost:8000/api/list_pdfs/`)
+        // fetch(`https://pdf-backend-vc88.onrender.com/api/list_pdfs/`)
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch PDFs");
                 return res.json();

@@ -19,6 +19,7 @@
     "react-dom": "^19.1.0",
     "react-dropzone": "^14.3.8",
     "react-pdf": "^10.0.1",
+    "react-pdf-highlighter": "^8.0.0-rc.0",
     "react-router-dom": "^7.6.3"
   },
   "devDependencies": {
