@@ -53,6 +53,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  min-width: 320px;
+  max-width: 400px;
 }
 
 .annotations-card {
@@ -82,89 +84,62 @@
   text-align: center;
 }
 
-/* New styles for notes */
+/* Sidebar notes list styles */
 .notes-list {
-  width: 100%;
-  flex: 1 1 auto;
-  overflow-y: auto;
-  padding-right: 8px;
-  margin-bottom: 0;
-  box-sizing: border-box;
-}
-
-.notes-list .note-item:last-child {
-  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .note-item {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #fafbfc;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-.note-item:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-left: 4px solid #4f8cff;
 }
 
 .note-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.page-number {
-  background: #3b82f6;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  color: #4f8cff;
+  margin-bottom: 0.25rem;
 }
 
 .selected-text {
-  font-size: 0.98em;
-  color: #3b4a5a;
-  margin: 0.5rem 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: #222;
+  margin-bottom: 0.25rem;
   font-style: italic;
-  background: none;
-  border-radius: 0;
-  border-left: 3px solid #4b6cb7;
-  padding: 0.25rem 0.5rem 0.25rem 0.75rem;
-  box-shadow: none;
 }
 
 .note-content {
-  margin: 0.75rem 0;
-  line-height: 1.5;
-  color: #374151;
+  font-size: 1rem;
+  color: #333;
 }
 
-.note-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.75rem;
+/* Remove grey area below PDF */
+.pdf-container {
+  background: #fff !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
-.view-button {
-  background: #10b981 !important;
-  color: white !important;
-  border: none !important;
-  padding: 6px 16px !important;
-  border-radius: 6px !important;
-  font-size: 0.8rem !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
-  transition: background-color 0.2s ease !important;
+/* Page number below PDF */
+.page-number-display {
+  text-align: center;
+  margin: 0.5rem 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #4f8cff;
+  font-weight: 500;
 }
 
-.view-button:hover {
-  background: #059669 !important;
+/* Ensure the PDF container fits content */
+.pdf-highlighter-container {
+  position: relative;
+  background: #fff;
+  padding: 0;
+  margin: 0;
 }
 
 /* Scrollbar styling for notes list */
@@ -364,4 +339,42 @@
 .remove-note-btn:hover {
   background: #fbeaea;
   color: #c53030;
+}
+
+/* Custom annotation popup styles */
+.custom-annotation-popup {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+}
+
+.custom-annotation-textarea {
+  width: 100%;
+  min-height: 60px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 6px;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.custom-annotation-save-btn {
+  padding: 6px 16px;
+  border-radius: 4px;
+  border: none;
+  background: #4b6cb7;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.15s;
+}
+
+.custom-annotation-save-btn:hover,
+.custom-annotation-save-btn:focus {
+  background: #345087;
 }
