@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './PdfComp.css';
 import "react-pdf-highlighter/dist/style.css";
-import { PdfHighlighter, PdfLoader } from "react-pdf-highlighter";
+import { PdfHighlighter, PdfLoader, Tip, Highlight } from "react-pdf-highlighter";
 
 function PdfComp() {
   const pdfUrl = localStorage.getItem('uploadedPdfUrl') || "https://arxiv.org/pdf/1708.08021.pdf";
+  const [highlights, setHighlights] = useState([]);
+
+  const addHighlight = (highlight) => {
+    setHighlights((prev) => [
+      { ...highlight, id: String(Math.random()) },
+      ...prev,
+    ]);
+  };
 
   return (
     <div className="pdf-main-container">
@@ -14,9 +22,24 @@ function PdfComp() {
             {pdfDocument => (
               <PdfHighlighter
                 pdfDocument={pdfDocument}
-                highlights={[]}
-                onSelectionFinished={() => null}
-                highlightTransform={() => null}
+                highlights={highlights}
+                onSelectionFinished={(position, content, hideTipAndSelection, transformSelection) => (
+                  <Tip
+                    onOpen={transformSelection}
+                    onConfirm={comment => {
+                      addHighlight({ content, position, comment });
+                      hideTipAndSelection();
+                    }}
+                  />
+                )}
+                highlightTransform={(highlight, index, setTip, hideTip, viewportToScaled, screenshot, isScrolledTo) => (
+                  <Highlight
+                    key={index}
+                    isScrolledTo={isScrolledTo}
+                    position={highlight.position}
+                    comment={highlight.comment}
+                  />
+                )}
               />
             )}
           </PdfLoader>
