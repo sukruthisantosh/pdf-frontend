@@ -23,15 +23,44 @@ function PdfComp() {
               <PdfHighlighter
                 pdfDocument={pdfDocument}
                 highlights={highlights}
-                onSelectionFinished={(position, content, hideTipAndSelection, transformSelection) => (
-                  <Tip
-                    onOpen={transformSelection}
-                    onConfirm={comment => {
-                      addHighlight({ content, position, comment });
-                      hideTipAndSelection();
-                    }}
-                  />
-                )}
+                onSelectionFinished={(position, content, hideTipAndSelection) => {
+                  let input = "";
+                  return (
+                    <div
+                      style={{
+                        background: "#fff",
+                        border: "1px solid #ccc",
+                        borderRadius: 4,
+                        padding: 12,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                        minWidth: 200,
+                      }}
+                    >
+                      <textarea
+                        placeholder="Your comment"
+                        style={{ width: "100%", minHeight: 60, marginBottom: 8 }}
+                        onChange={e => (input = e.target.value)}
+                      />
+                      <button
+                        onClick={() => {
+                          addHighlight({ content, position, comment: { text: input } });
+                          hideTipAndSelection();
+                        }}
+                        style={{
+                          padding: "6px 16px",
+                          borderRadius: 4,
+                          border: "none",
+                          background: "#4b6cb7",
+                          color: "#fff",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  );
+                }}
                 highlightTransform={(highlight, index, setTip, hideTip, viewportToScaled, screenshot, isScrolledTo) => (
                   <Highlight
                     key={index}
