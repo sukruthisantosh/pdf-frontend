@@ -11,7 +11,6 @@ function PdfComp() {
   const pdfUrl = localStorage.getItem('uploadedPdfUrl');
   const [notes, setNotes] = useState([]);
   const [noteId, setNoteId] = useState(0);
-  const [message, setMessage] = useState('');
 
   // Page navigation plugin
   const pageNavigationPluginInstance = pageNavigationPlugin();
@@ -42,8 +41,9 @@ function PdfComp() {
     </div>
   );
 
-  function HighlightContentPortal({ props, message, setMessage, addNote }) {
-    const [portalPos, setPortalPos] = useState(null);
+  const HighlightContentPortal = React.memo(({ props, addNote }) => {
+    const [portalPos, setPortalPos] = React.useState(null);
+    const [localMessage, setLocalMessage] = React.useState('');
     const PORTAL_WIDTH = 320;
     const PORTAL_HEIGHT = 180;
 
@@ -83,8 +83,8 @@ function PdfComp() {
           </div>
         </div>
         <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          value={localMessage}
+          onChange={(e) => setLocalMessage(e.target.value)}
           placeholder="Add your note here..."
           className="note-popup-textarea note-textarea"
         />
@@ -92,34 +92,31 @@ function PdfComp() {
           <Button onClick={props.cancel} className="note-action-btn">
             Cancel
           </Button>
-          <Button onClick={addNote} className="note-action-btn add">
+          <Button onClick={() => addNote(localMessage)} className="note-action-btn add">
             Add Note
           </Button>
         </div>
       </div>,
       document.body
     );
-  }
+  });
 
   const renderHighlightContent = (props) => {
-    const addNote = () => {
-      if (message !== '') {
-        const pageIndex = props.highlightAreas[0]?.pageIndex ?? 0;
-        const note = {
-          id: noteId + 1,
-          content: message,
-          highlightAreas: props.highlightAreas,
-          quote: props.selectedText,
-          pageIndex, // Use correct pageIndex
-          timestamp: new Date().toISOString(),
-        };
-        setNotes(notes.concat([note]));
-        setNoteId(noteId + 1);
-        setMessage('');
-        props.cancel();
-      }
+    const addNote = (message) => {
+      const pageIndex = props.highlightAreas[0]?.pageIndex ?? 0;
+      const note = {
+        id: noteId + 1,
+        content: message, // Allow empty content
+        highlightAreas: props.highlightAreas,
+        quote: props.selectedText,
+        pageIndex,
+        timestamp: new Date().toISOString(),
+      };
+      setNotes(notes.concat([note]));
+      setNoteId(noteId + 1);
+      props.cancel();
     };
-    return <HighlightContentPortal props={props} message={message} setMessage={setMessage} addNote={addNote} />;
+    return <HighlightContentPortal props={props} addNote={addNote} />;
   };
 
   // Function to navigate to a specific annotation (jump to page)
