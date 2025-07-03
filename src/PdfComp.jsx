@@ -24,6 +24,11 @@ function PdfComp() {
     ]);
   };
 
+  // Delete highlight by id
+  const deleteHighlight = (highlightId) => {
+    setHighlights((prev) => prev.filter(highlight => highlight.id !== highlightId));
+  };
+
   // Handle clicking on an annotation to scroll to it
   const handleAnnotationClick = useCallback((highlight) => {
     console.log('Annotation clicked:', highlight);
@@ -111,20 +116,34 @@ function PdfComp() {
                 <div
                   key={highlight.id || idx}
                   className={`note-item ${scrolledToHighlightId === highlight.id ? 'note-item--scrolled-to' : ''}`}
-                  onClick={() => handleAnnotationClick(highlight)}
                 >
                   <div className="note-header">
-                    <strong>Page {highlight.position.pageNumber || '?'} </strong>
+                    <strong>Page {highlight.position.pageNumber || '?'}</strong>
+                    <button
+                      className="delete-note-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteHighlight(highlight.id);
+                      }}
+                      title="Delete note"
+                    >
+                      ×
+                    </button>
                   </div>
-                  <div className="selected-text">
-                    {highlight.content && highlight.content.text
-                      ? `"${highlight.content.text}"`
-                      : <em>No text selected</em>}
-                  </div>
-                  <div className="note-content">
-                    {highlight.comment && highlight.comment.text
-                      ? highlight.comment.text
-                      : <em>No annotation</em>}
+                  <div
+                    className="note-content-wrapper"
+                    onClick={() => handleAnnotationClick(highlight)}
+                  >
+                    <div className="selected-text">
+                      {highlight.content && highlight.content.text
+                        ? `"${highlight.content.text}"`
+                        : <em>No text selected</em>}
+                    </div>
+                    <div className="note-content">
+                      {highlight.comment && highlight.comment.text
+                        ? highlight.comment.text
+                        : <em>No annotation</em>}
+                    </div>
                   </div>
                 </div>
               ))}
