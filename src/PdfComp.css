@@ -202,14 +202,14 @@
 }
 
 .note-content-wrapper {
-  cursor: pointer;
   padding: 0.2rem 0 0.1rem 0;
   border-radius: 6px;
   transition: background 0.15s;
+  cursor: default;
 }
 
 .note-content-wrapper:hover {
-  background: #f6f8fa;
+  background: none;
 }
 
 .selected-text {
@@ -487,4 +487,26 @@
 
 .custom-annotation-save-btn:active {
   transform: translateY(0);
+}
+
+.view-note-btn {
+  background: #f4f6fa;
+  color: #2563eb;
+  border: none;
+  border-radius: 6px;
+  padding: 0.32rem 1.1rem;
+  font-size: 0.97rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.04);
+  outline: none;
+  margin-right: 0.1rem;
+}
+
+.view-note-btn:hover,
+.view-note-btn:focus {
+  background: #2563eb;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
 }

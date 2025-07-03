@@ -118,22 +118,28 @@ function PdfComp() {
                   className={`note-item ${scrolledToHighlightId === highlight.id ? 'note-item--scrolled-to' : ''}`}
                 >
                   <div className="note-header">
-                    <strong>Page {highlight.position.pageNumber || '?'}</strong>
-                    <button
-                      className="delete-note-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteHighlight(highlight.id);
-                      }}
-                      title="Delete note"
-                    >
-                      ×
-                    </button>
+                    <strong>Page {highlight.position.pageNumber || '?'} </strong>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <button
+                        className="view-note-btn"
+                        onClick={() => handleAnnotationClick(highlight)}
+                        title="View in PDF"
+                      >
+                        View
+                      </button>
+                      <button
+                        className="delete-note-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteHighlight(highlight.id);
+                        }}
+                        title="Delete note"
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
-                  <div
-                    className="note-content-wrapper"
-                    onClick={() => handleAnnotationClick(highlight)}
-                  >
+                  <div className="note-content-wrapper">
                     <div className="selected-text">
                       {highlight.content && highlight.content.text
                         ? `"${highlight.content.text}"`
