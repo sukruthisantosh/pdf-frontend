@@ -3,6 +3,8 @@ import './PdfComp.css';
 import "react-pdf-highlighter/dist/style.css";
 import { PdfHighlighter, PdfLoader, Highlight } from "react-pdf-highlighter";
 
+let highlightIdCounter = 0;
+
 function PdfComp() {
   const pdfUrl = localStorage.getItem('uploadedPdfUrl') || "https://arxiv.org/pdf/1708.08021.pdf";
   const [highlights, setHighlights] = useState([]);
@@ -11,12 +13,9 @@ function PdfComp() {
   // Reference to the scroll function
   const scrollViewerTo = useRef(null);
 
-  // Add unique id to each highlight
+  // Add unique, stable id to each highlight, preserving all structure
   const addHighlight = (highlight) => {
-    const newHighlight = {
-      ...highlight,
-      id: String(Math.random())
-    };
+    const newHighlight = { ...highlight, id: `highlight-${highlightIdCounter++}` };
     console.log('Adding highlight:', newHighlight);
     setHighlights((prev) => [
       newHighlight,
@@ -31,20 +30,20 @@ function PdfComp() {
 
   // Handle clicking on an annotation to scroll to it
   const handleAnnotationClick = useCallback((highlight) => {
-    console.log('Annotation clicked:', highlight);
     console.log('Scroll function available:', !!scrollViewerTo.current);
-
+    console.log('Highlight passed to scroll function:', highlight);
     if (scrollViewerTo.current) {
       setScrolledToHighlightId(highlight.id);
       scrollViewerTo.current(highlight);
+      setTimeout(() => setScrolledToHighlightId(null), 2000);
     } else {
-      console.error('Scroll function not available');
-      // Fallback: try to scroll to the page manually
+      // fallback: scroll to page
       if (highlight.position && highlight.position.pageNumber) {
         const pageElement = document.querySelector(`[data-page-number="${highlight.position.pageNumber}"]`);
         if (pageElement) {
           pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
           setScrolledToHighlightId(highlight.id);
+          setTimeout(() => setScrolledToHighlightId(null), 2000);
         }
       }
     }
@@ -65,8 +64,8 @@ function PdfComp() {
                 pdfDocument={pdfDocument}
                 highlights={highlights}
                 onScrollChange={handleScrollChange}
-                scrollRef={(scrollTo) => {
-                  console.log('Setting scroll function:', !!scrollTo);
+                scrollRef={scrollTo => {
+                  console.log('Setting scroll function:', scrollTo);
                   scrollViewerTo.current = scrollTo;
                 }}
                 onSelectionFinished={(position, content, hideTipAndSelection) => {
@@ -90,9 +89,9 @@ function PdfComp() {
                     </div>
                   );
                 }}
-                highlightTransform={(highlight, index) => (
+                highlightTransform={(highlight) => (
                   <Highlight
-                    key={index}
+                    key={highlight.id}
                     isScrolledTo={scrolledToHighlightId === highlight.id}
                     position={highlight.position}
                     comment={highlight.comment}
@@ -112,9 +111,9 @@ function PdfComp() {
             </div>
           ) : (
             <div className="notes-list">
-              {highlights.map((highlight, idx) => (
+              {highlights.map((highlight) => (
                 <div
-                  key={highlight.id || idx}
+                  key={highlight.id}
                   className={`note-item ${scrolledToHighlightId === highlight.id ? 'note-item--scrolled-to' : ''}`}
                 >
                   <div className="note-header">
