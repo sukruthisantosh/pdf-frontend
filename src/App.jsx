@@ -37,8 +37,8 @@ function App() {
         // Store the PDF URL in localStorage
         const pdfUrl = data.url.startsWith('http')
           ? data.url
-          // : `https://pdf-backend-vc88.onrender.com${data.url}`
-          : `http://localhost:8000${data.url}`
+          : `https://pdf-backend-vc88.onrender.com${data.url}`
+          // : `http://localhost:8000${data.url}`
         localStorage.setItem('uploadedPdfUrl', pdfUrl)
       } else {
         setUploadStatus('Upload failed.')
