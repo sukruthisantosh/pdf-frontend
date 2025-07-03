@@ -2,7 +2,22 @@
 .Highlight--scrolledTo {
   background: rgba(79, 140, 255, 0.5) !important;
   box-shadow: 0 0 8px 2px #4f8cff55;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0% {
+    box-shadow: 0 0 8px 2px #4f8cff55;
+  }
+
+  50% {
+    box-shadow: 0 0 12px 4px #4f8cff88;
+  }
+
+  100% {
+    box-shadow: 0 0 8px 2px #4f8cff55;
+  }
 }
 
 .pdf-main-container {
@@ -113,7 +128,8 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   border-left: 4px solid #4f8cff;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .note-item:hover,
@@ -399,4 +415,42 @@
 .custom-annotation-save-btn:hover,
 .custom-annotation-save-btn:focus {
   background: #345087;
+}
+
+/* Enhanced note item styling for scrolled-to state */
+.note-item--scrolled-to {
+  background: #e6f0ff !important;
+  border-left-color: #4f8cff !important;
+  box-shadow: 0 2px 8px rgba(79, 140, 255, 0.15) !important;
+  transform: translateX(4px);
+  transition: all 0.3s ease;
+}
+
+.note-item--scrolled-to .note-header {
+  color: #4f8cff !important;
+  font-weight: 600;
+}
+
+.note-item--scrolled-to::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #4f8cff;
+  border-radius: 2px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
