@@ -7,7 +7,6 @@ function PdfComp() {
   const pdfUrl = localStorage.getItem('uploadedPdfUrl') || "https://arxiv.org/pdf/1708.08021.pdf";
   const [highlights, setHighlights] = useState([]);
   const [scrolledToHighlightId, setScrolledToHighlightId] = useState(null);
-  const [, forceUpdate] = useState(0); // for re-render
 
   // Reference to the scroll function
   const scrollViewerTo = useRef(null);
@@ -23,17 +22,27 @@ function PdfComp() {
       newHighlight,
       ...prev,
     ]);
-    setTimeout(() => forceUpdate((n) => n + 1), 100); // force re-render after highlight is added
   };
 
   // Handle clicking on an annotation to scroll to it
   const handleAnnotationClick = useCallback((highlight) => {
-    if (!scrollViewerTo.current) {
-      alert("PDF is still loading. Please wait a moment and try again.");
-      return;
+    console.log('Annotation clicked:', highlight);
+    console.log('Scroll function available:', !!scrollViewerTo.current);
+
+    if (scrollViewerTo.current) {
+      setScrolledToHighlightId(highlight.id);
+      scrollViewerTo.current(highlight);
+    } else {
+      console.error('Scroll function not available');
+      // Fallback: try to scroll to the page manually
+      if (highlight.position && highlight.position.pageNumber) {
+        const pageElement = document.querySelector(`[data-page-number="${highlight.position.pageNumber}"]`);
+        if (pageElement) {
+          pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setScrolledToHighlightId(highlight.id);
+        }
+      }
     }
-    setScrolledToHighlightId(highlight.id);
-    scrollViewerTo.current(highlight);
   }, []);
 
   // Reset scrolled highlight when user scrolls manually
@@ -101,9 +110,8 @@ function PdfComp() {
               {highlights.map((highlight, idx) => (
                 <div
                   key={highlight.id || idx}
-                  className={`note-item ${scrolledToHighlightId === highlight.id ? 'note-item--scrolled-to' : ''} ${!scrollViewerTo.current ? 'note-item--disabled' : ''}`}
-                  onClick={() => scrollViewerTo.current && handleAnnotationClick(highlight)}
-                  style={{ cursor: scrollViewerTo.current ? 'pointer' : 'not-allowed', opacity: scrollViewerTo.current ? 1 : 0.5 }}
+                  className={`note-item ${scrolledToHighlightId === highlight.id ? 'note-item--scrolled-to' : ''}`}
+                  onClick={() => handleAnnotationClick(highlight)}
                 >
                   <div className="note-header">
                     <strong>Page {highlight.position.pageNumber || '?'} </strong>

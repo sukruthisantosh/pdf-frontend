@@ -424,8 +424,3 @@
 .custom-annotation-save-btn:focus {
   background: #345087;
 }
-
-.note-item--disabled {
-  pointer-events: none;
-  opacity: 0.5;
-}
