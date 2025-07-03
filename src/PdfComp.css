@@ -1,8 +1,24 @@
 /* Highlight color when scrolled to (focused) */
 .Highlight--scrolledTo {
-  background: rgba(79, 140, 255, 0.5) !important;
-  box-shadow: 0 0 8px 2px #4f8cff55;
-  transition: background 0.3s;
+  background: rgba(37, 99, 235, 0.6) !important;
+  box-shadow: 0 0 12px 4px rgba(37, 99, 235, 0.4);
+  transition: all 0.3s ease;
+  border-radius: 2px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 12px 4px rgba(37, 99, 235, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 16px 6px rgba(37, 99, 235, 0.6);
+  }
+
+  100% {
+    box-shadow: 0 0 12px 4px rgba(37, 99, 235, 0.4);
+  }
 }
 
 .pdf-main-container {
@@ -120,6 +136,14 @@
 .note-item:focus {
   background: #e6f0ff;
   outline: none;
+}
+
+.note-item--scrolled-to {
+  background: #e6f0ff !important;
+  border-left-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+  transform: translateX(2px);
+  transition: all 0.3s ease;
 }
 
 .note-header {
@@ -399,4 +423,9 @@
 .custom-annotation-save-btn:hover,
 .custom-annotation-save-btn:focus {
   background: #345087;
+}
+
+.note-item--disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import './PdfComp.css';
 import "react-pdf-highlighter/dist/style.css";
 import { PdfHighlighter, PdfLoader, Highlight } from "react-pdf-highlighter";
@@ -6,14 +6,40 @@ import { PdfHighlighter, PdfLoader, Highlight } from "react-pdf-highlighter";
 function PdfComp() {
   const pdfUrl = localStorage.getItem('uploadedPdfUrl') || "https://arxiv.org/pdf/1708.08021.pdf";
   const [highlights, setHighlights] = useState([]);
+  const [scrolledToHighlightId, setScrolledToHighlightId] = useState(null);
+  const [, forceUpdate] = useState(0); // for re-render
+
+  // Reference to the scroll function
+  const scrollViewerTo = useRef(null);
 
   // Add unique id to each highlight
   const addHighlight = (highlight) => {
+    const newHighlight = {
+      ...highlight,
+      id: String(Math.random())
+    };
+    console.log('Adding highlight:', newHighlight);
     setHighlights((prev) => [
-      { ...highlight, id: String(Math.random()) },
+      newHighlight,
       ...prev,
     ]);
+    setTimeout(() => forceUpdate((n) => n + 1), 100); // force re-render after highlight is added
   };
+
+  // Handle clicking on an annotation to scroll to it
+  const handleAnnotationClick = useCallback((highlight) => {
+    if (!scrollViewerTo.current) {
+      alert("PDF is still loading. Please wait a moment and try again.");
+      return;
+    }
+    setScrolledToHighlightId(highlight.id);
+    scrollViewerTo.current(highlight);
+  }, []);
+
+  // Reset scrolled highlight when user scrolls manually
+  const handleScrollChange = useCallback(() => {
+    setScrolledToHighlightId(null);
+  }, []);
 
   return (
     <div className="pdf-main-container">
@@ -24,6 +50,11 @@ function PdfComp() {
               <PdfHighlighter
                 pdfDocument={pdfDocument}
                 highlights={highlights}
+                onScrollChange={handleScrollChange}
+                scrollRef={(scrollTo) => {
+                  console.log('Setting scroll function:', !!scrollTo);
+                  scrollViewerTo.current = scrollTo;
+                }}
                 onSelectionFinished={(position, content, hideTipAndSelection) => {
                   let input = "";
                   return (
@@ -45,10 +76,10 @@ function PdfComp() {
                     </div>
                   );
                 }}
-                highlightTransform={(highlight, index, setTip, hideTip, viewportToScaled, screenshot, isScrolledTo) => (
+                highlightTransform={(highlight, index) => (
                   <Highlight
                     key={index}
-                    isScrolledTo={isScrolledTo}
+                    isScrolledTo={scrolledToHighlightId === highlight.id}
                     position={highlight.position}
                     comment={highlight.comment}
                   />
@@ -70,8 +101,9 @@ function PdfComp() {
               {highlights.map((highlight, idx) => (
                 <div
                   key={highlight.id || idx}
-                  className="note-item"
-                // onClick removed for now
+                  className={`note-item ${scrolledToHighlightId === highlight.id ? 'note-item--scrolled-to' : ''} ${!scrollViewerTo.current ? 'note-item--disabled' : ''}`}
+                  onClick={() => scrollViewerTo.current && handleAnnotationClick(highlight)}
+                  style={{ cursor: scrollViewerTo.current ? 'pointer' : 'not-allowed', opacity: scrollViewerTo.current ? 1 : 0.5 }}
                 >
                   <div className="note-header">
                     <strong>Page {highlight.position.pageNumber || '?'} </strong>
